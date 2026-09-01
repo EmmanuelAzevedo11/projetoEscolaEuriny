@@ -15,8 +15,25 @@
         </nav>
     </header>
     <main>
+    <h1>Escolha sua chapa</h1>
+    <div id="listaChapas"></div>
 
-    </main>
+    <div id="modalVoto" class="modal">
+        <div class="modal-conteudo">
+            <button id="fecharModal" class="fechar">×</button>
+            <h2>Confirmar Voto</h2>
+            <p id="nomeChapaVoto"></p>
+            <form id="formVoto">
+                <label for="raAluno">RA:</label>
+                <input type="text" id="raAluno" required>
+                <label for="senhaAluno">Senha:</label>
+                <input type="password" id="senhaAluno" required>
+                <p id="mensagemVoto"></p>
+                <button type="submit" id="confirmarVoto">Votar</button>
+            </form>
+        </div>
+    </div>
+</main>
     <footer>
 
     </footer>

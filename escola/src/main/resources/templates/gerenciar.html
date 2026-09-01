@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciar chapa</title>
-    <link rel="stylesheet" href="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/static/css/paginaInicial.css">
+    <link rel="stylesheet" href="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/static/css/gerenciar.css">
 </head>
 <body>
     <header>
@@ -15,6 +15,75 @@
         </nav>
     </header>
     <main>
+        <h1 id="titulo">Gerenciamento de chapa</h1>
+
+        <div id="listaChapas">
+
+        </div>
+
+        <div id="modalSenha" class="modal">
+
+            <div class="modal-conteudo">
+
+                <button id="fecharModal" class="fechar">x</button>
+
+                <h2>Acessar chapas</h2>
+
+                <p id="nomeChapaModal"></p>
+
+                <form id="formSenha">
+
+                    <label for="senha">
+                        Digite a senha da chapa:
+                    </label>
+
+                <input type="password" id="senha" required>
+
+                <p id="mensagemSenha"></p>
+
+                <button type="submit">Entrar</button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <div id="modalEdicao" class="modal">
+            <div class="modal-conteudo">
+                <button id="fecharEdicao" class="fechar">x</button>
+
+                <h2>Editar Chapa</h2>
+
+                <form id="formEdicao">
+
+                    <label for="editarNome">
+                        Nome da chapa:
+                    </label>
+
+                    <input type="text" id="editarNome" required>
+
+                    <label for="editarObjetivos">
+                        Objetivos da chapa:
+                    </label>
+
+                    <textarea id="editarObjetivos" required></textarea>
+
+                    <h3>Membros da Chapa</h3>
+
+                    <div id="editarMembros"></div>
+
+                    <button type="submit">
+                        Salvar alterações
+                    </button>
+
+                    <button type="button" id="apagarChapa">
+                        Apagar Chapa
+                    </button>
+
+                </form>
+            </div>
+        </div>
 
     </main>
     <footer>

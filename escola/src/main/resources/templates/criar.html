@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criação de chapa</title>
+    <link rel="stylesheet" href="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/static/css/criar.css">
+</head>
+<body>
+    <header>
+        <nav>
+        <a href="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/templates/paginaInicial.html">Menu</a>
+        <a href="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/templates/gerenciar.html">Editar Chapa</a>
+        <a href="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/templates/votar.html">Votar</a>
+        </nav>
+    </header>
+    <main>
+        <div id="botao_div">
+            <button id="botao">Criar chapa</button>
+        </div>
+        <div id="modalChapa" class="modal">
+
+    <div class="modal-conteudo">
+
+        <button id="fecharModal" class="fechar">×</button>
+
+        <h1>Criar Chapa</h1>
+
+        <form id="formChapa">
+
+            <h2>Informações da Chapa</h2>
+
+            <label for="nomeChapa">Nome da chapa:</label>
+            <input type="text" id="nomeChapa" name="nomeChapa" required>
+
+            <label for="objetivos">Objetivos da chapa:</label>
+            <textarea id="objetivos" name="objetivos" required></textarea>
+
+            <label for="logo">Logo da chapa:</label>
+            <input type="file" id="logo" name="logo" accept="image/*" required>
+
+
+            <h2>Membros da Chapa</h2>
+
+            <div class="membro">
+                <h3>Membro 1</h3>
+
+                <input type="text" placeholder="Nome" required>
+                <input type="text" placeholder="RA" required>
+                <input type="text" placeholder="Série" required>
+            </div>
+
+            <div class="membro">
+                <h3>Membro 2</h3>
+
+                <input type="text" placeholder="Nome" required>
+                <input type="text" placeholder="RA" required>
+                <input type="text" placeholder="Série" required>
+            </div>
+
+            <div class="membro">
+                <h3>Membro 3</h3>
+
+                <input type="text" placeholder="Nome" required>
+                <input type="text" placeholder="RA" required>
+                <input type="text" placeholder="Série" required>
+            </div>
+
+            <div class="membro">
+                <h3>Membro 4</h3>
+
+                <input type="text" placeholder="Nome" required>
+                <input type="text" placeholder="RA" required>
+                <input type="text" placeholder="Série" required>
+            </div>
+
+            <div class="membro">
+                <h3>Membro 5</h3>
+
+                <input type="text" placeholder="Nome" required>
+                <input type="text" placeholder="RA" required>
+                <input type="text" placeholder="Série" required>
+            </div>
+
+            <div class="membro">
+                <h3>Membro 6</h3>
+
+                <input type="text" placeholder="Nome" required>
+                <input type="text" placeholder="RA" required>
+                <input type="text" placeholder="Série" required>
+            </div>
+
+            <div class="membro">
+                <h3>Membro 7</h3>
+
+                <input type="text" placeholder="Nome" required>
+                <input type="text" placeholder="RA" required>
+                <input type="text" placeholder="Série" required>
+            </div>
+
+            <div class="membro">
+                <h3>Membro 8</h3>
+
+                <input type="text" placeholder="Nome" required>
+                <input type="text" placeholder="RA" required>
+                <input type="text" placeholder="Série" required>
+            </div>
+
+            <button type="submit" id="salvarChapa">
+                Criar Chapa
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+    </main>
+    <footer>
+
+    </footer>
+</body>
+<script src="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/static/js/criar.js"></script>
+</html>

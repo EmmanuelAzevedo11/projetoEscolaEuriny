@@ -40,3 +40,133 @@ footer {
     gap: 40px;
     background-color: lightgreen;
 }
+main {
+    padding: 40px;
+    box-sizing: border-box;
+}
+main h1 {
+    text-align: center;
+    color: darkgreen;
+    margin-bottom: 35px;
+}
+#listaChapas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.card-chapa {
+    background-color: #f5fff5;
+    border-radius: 20px;
+    padding: 25px;
+    box-sizing: border-box;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-chapa:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+.card-chapa h2 {
+    color: darkgreen;
+    margin-top: 0;
+}
+.card-chapa p {
+    color: #333;
+}
+.lista-membros {
+    margin-top: 15px;
+}
+.membro {
+    padding: 8px 0;
+    border-bottom: 1px solid #ccc;
+}
+.membro:last-child {
+    border-bottom: none;
+}
+.botao-votar {
+    width: 100%;
+    padding: 13px;
+    margin-top: 20px;
+    background-color: darkgreen;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 17px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+.botao-votar:hover {
+    transform: scale(1.03);
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+.modal.ativo {
+    display: flex;
+}
+.modal-conteudo {
+    position: relative;
+    width: 90%;
+    max-width: 450px;
+    padding: 35px;
+    box-sizing: border-box;
+    background-color: #f5fff5;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+.fechar {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    border: none;
+    background: none;
+    font-size: 32px;
+    cursor: pointer;
+}
+.modal-conteudo h2 {
+    color: darkgreen;
+}
+#formVoto {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+#formVoto input {
+    padding: 12px;
+    border: 1px solid #aaa;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+#formVoto input:focus {
+    outline: none;
+    border-color: darkgreen;
+    box-shadow: 0 0 5px rgba(0, 100, 0, 0.2);
+}
+#confirmarVoto {
+    margin-top: 15px;
+    padding: 13px;
+    background-color: darkgreen;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 17px;
+    cursor: pointer;
+}
+#confirmarVoto:hover {
+    transform: scale(1.03);
+}
+#mensagemVoto {
+    font-weight: bold;
+}

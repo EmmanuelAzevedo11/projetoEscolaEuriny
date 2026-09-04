@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>Gerenciar Membros: <span th:text="${chapa.nome}"></span></h2>
+
+<form th:action="@{/chapas/{id}/membros(id=${chapa.id})}" th:object="${form}" method="post">
+
+    <!-- Faz um loop para renderizar um campo Select2 para CADA cargo do Enum -->
+    <div th:each="membro, stat : *{membros}" style="margin-bottom: 15px;">
+
+        <!-- Mostra o nome do cargo (ex: PRESIDENTE) -->
+        <label th:text="${membro.role.type}"></label>
+
+        <!-- Campo oculto para garantir que o Role seja enviado no POST -->
+        <input type="hidden" th:field="*{membros[__${stat.index}__].role}" />
+
+        <!-- Select2 para escolher o aluno -->
+        <select class="select2" th:field="*{membros[__${stat.index}__].userId}" style="width: 100%;">
+            <option value="">-- Selecione o responsável --</option>
+            <option th:each="user : ${todosUsuarios}"
+                    th:value="${user.id}"
+                    th:text="${user.nome + ' (RA: ' + user.ra + ')'}">
+            </option>
+        </select>
+    </div>
+
+    <button type="submit">Salvar Membros</button>
+</form>
+</body>
+</html>

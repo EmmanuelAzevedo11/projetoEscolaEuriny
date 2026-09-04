@@ -26,7 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("RA não encontrado"));
 
         return new org.springframework.security.core.userdetails.User(
-                user.getRA(),
+                user.getRa(),
                 user.getPassword(),
                 true,
                 true, true, true,

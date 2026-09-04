@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -31,4 +33,10 @@ public class Chapa {
     @Column(name = "number", nullable = false)
     @NotBlank(message = "O número da chapa é obrigatório")
     private Integer number;
+
+    @Column(name = "objective", nullable = true, columnDefinition = "TEXT")
+    private String objective;
+
+    @OneToMany(mappedBy = "chapa", fetch = FetchType.LAZY)
+    private List<Voto> votos;
 }

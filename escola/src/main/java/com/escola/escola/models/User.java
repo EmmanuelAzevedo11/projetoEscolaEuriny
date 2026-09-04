@@ -24,7 +24,10 @@ public class User {
     private Long username;
 
     @Column(name = "ra",nullable = true)
-    private String RA;
+    private String ra;
+
+    @Column(name = "ra_digit", nullable = true)
+    private Long raDigit;
 
     @Column(name = "password", nullable = false)
     @NotBlank(message = "O usuário tem que ter uma senha padrão")
@@ -35,6 +38,9 @@ public class User {
     @NotNull(message = "Selecione um tipo de usuário")
     private UserRole role;
 
+    @Column(name = "class", nullable = true)
+    @NotBlank(message = "O usuário tem que ter uma série de forma obrigatória")
+    private String team;
 
 
 }

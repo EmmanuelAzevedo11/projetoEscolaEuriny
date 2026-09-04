@@ -21,13 +21,13 @@ public class User {
 
     @Column(name = "username" ,nullable = false)
     @NotBlank(message = "Usuário tem que ter um nome")
-    private Long username;
+    private String username;
 
     @Column(name = "ra",nullable = true)
     private String ra;
 
     @Column(name = "ra_digit", nullable = true)
-    private Long raDigit;
+    private String raDigit;
 
     @Column(name = "password", nullable = false)
     @NotBlank(message = "O usuário tem que ter uma senha padrão")

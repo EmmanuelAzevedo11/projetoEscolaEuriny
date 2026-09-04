@@ -4,8 +4,8 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    font-family: Arial, sans-serif;
 }
-
 nav {
     width: 100%;
     height: 70px;
@@ -15,21 +15,18 @@ nav {
     gap: 40px;
     background-color: lightgreen;
 }
-
 nav a {
     text-decoration: none;
     color: black;
     transition: transform 0.2s ease;
 }
-nav a:hover{
+nav a:hover {
     transform: scale(1.1);
 }
-
 main {
     flex: 1;
     background: linear-gradient(135deg, #f5fff5, #dff5df);
 }
-
 footer {
     width: 100%;
     height: 70px;
@@ -48,7 +45,6 @@ footer {
     font-weight: bold;
     position: relative;
 }
-
 #titulo::after {
     content: "";
     display: block;
@@ -78,9 +74,23 @@ footer {
 }
 .card-chapa h2 {
     margin-top: 0;
+    color: darkgreen;
 }
 .card-chapa p {
     margin: 8px 0;
+}
+.card-chapa button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: darkgreen;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+}
+.card-chapa button:hover {
+    background-color: green;
 }
 .modal {
     display: none;
@@ -142,28 +152,41 @@ footer {
 }
 #mensagemSenha {
     margin: 5px 0;
+    color: darkred;
 }
-
 #formEdicao {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
-
 #formEdicao input,
-#formEdicao textarea {
+#formEdicao textarea,
+#formEdicao select {
+    width: 100%;
     padding: 12px;
     border: 1px solid #aaa;
     border-radius: 8px;
     font-size: 16px;
     box-sizing: border-box;
+    font-family: inherit;
 }
-
 #formEdicao textarea {
     min-height: 120px;
     resize: vertical;
 }
-
+#formEdicao select {
+    height: 45px;
+    background-color: white;
+    color: #333;
+    cursor: pointer;
+}
+#formEdicao select:focus,
+#formEdicao input:focus,
+#formEdicao textarea:focus {
+    outline: none;
+    border-color: darkgreen;
+    box-shadow: 0 0 5px rgba(0, 100, 0, 0.2);
+}
 #formEdicao button[type="submit"] {
     margin-top: 20px;
     padding: 12px;
@@ -174,47 +197,21 @@ footer {
     font-size: 16px;
     cursor: pointer;
 }
-
-#editarMembros {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+#formEdicao button[type="submit"]:hover {
+    background-color: green;
 }
-
-.membro-edicao {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 20px;
-    background-color: #dff5df;
-    border-radius: 15px;
+#gerenciarMembros {
+    margin-top: 20px;
+    padding: 12px;
+    background-color: darkgreen;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
 }
-
-.membro-edicao h4 {
-    margin: 0;
-}
-#modalEdicao .modal-conteudo {
-    width: 90%;
-    max-width: 1000px;
-    height: 85vh;
-    padding: 35px;
-    overflow-y: auto;
-}
-#modalEdicao #editarMembros {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-}
-#modalEdicao .membro-edicao {
-    padding: 15px;
-}
-#modalEdicao textarea {
-    min-height: 80px;
-}
-@media (max-width: 700px) {
-    #modalEdicao #editarMembros {
-        grid-template-columns: 1fr;
-    }
+#gerenciarMembros:hover {
+    background-color: green;
 }
 #apagarChapa {
     margin-top: 10px;
@@ -229,22 +226,82 @@ footer {
 #apagarChapa:hover {
     background-color: red;
 }
-
-#formEdicao select {
-width: 100%;
-padding: 12px;
-border: 1px solid #aaa;
-border-radius: 8px;
-font-size: 16px;
-box-sizing: border-box;
-background-color: white;
-color: #333;
-font-family: inherit;
-height: 45px;
-cursor: pointer;
+#modalEdicao .modal-conteudo {
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    padding: 35px;
+    overflow-y: auto;
 }
-#formEdicao select:focus {
-outline: none;
-border-color: darkgreen;
-box-shadow: 0 0 5px rgba(0, 100, 0, 0.2);
+#modalMembros .modal-conteudo {
+    width: 90%;
+    max-width: 1000px;
+    max-height: 90vh;
+    padding: 35px;
+    overflow-y: auto;
+}
+#formMembros {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+#listaMembros {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+.membro-flutuante {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    background-color: #dff5df;
+    border-radius: 15px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+.membro-flutuante h3 {
+    margin: 0 0 5px;
+    color: darkgreen;
+}
+.membro-flutuante input,
+.membro-flutuante select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #aaa;
+    border-radius: 8px;
+    font-size: 15px;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+.membro-flutuante input:focus,
+.membro-flutuante select:focus {
+    outline: none;
+    border-color: darkgreen;
+    box-shadow: 0 0 5px rgba(0, 100, 0, 0.2);
+}
+#formMembros button[type="submit"] {
+    padding: 12px;
+    background-color: darkgreen;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+#formMembros button[type="submit"]:hover {
+    background-color: green;
+}
+@media (max-width: 700px) {
+    #listaChapas {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+    #listaMembros {
+        grid-template-columns: 1fr;
+    }
+    #modalEdicao .modal-conteudo,
+    #modalMembros .modal-conteudo {
+        width: 95%;
+        padding: 25px;
+    }
 }

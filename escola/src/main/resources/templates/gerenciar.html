@@ -77,6 +77,10 @@
                         Salvar alterações
                     </button>
 
+                    <button type="button" id="gerenciarMembros">
+                        Gerenciar Membros
+                    </button>
+
                     <button type="button" id="apagarChapa">
                         Apagar Chapa
                     </button>
@@ -84,11 +88,22 @@
                 </form>
             </div>
         </div>
+        <div id="modalMembros" class="modal">
+            <div class="modal-conteudo modal-membros">
+                <button id="fecharMembros" class="fechar">x</button>
+                <h2>Gerenciar Membros: <span id="nomeChapaMembros"></span></h2>
+                <form id="formMembros">
+                <div id="listaMembros"></div>
+            <button type="submit">Salvar Membros</button>
+        </form>
+    </div>
+</div>
 
-    </main>
-    <footer>
+</main>
+<footer>
 
-    </footer>
-</body>
+</footer>
+<script src="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/static/js/gerenciarMembros.js"></script>
 <script src="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/static/js/gerenciar.js"></script>
+</body>
 </html>

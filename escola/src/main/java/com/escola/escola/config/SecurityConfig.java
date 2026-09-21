@@ -16,6 +16,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/login").permitAll() // Arquivos estáticos e login públicos
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/votos/chapas").hasRole("ADMIN")
+                        .requestMatchers("/chapas/salvar").hasRole("ADMIN")
+                        .requestMatchers("/chapas/salvar").hasRole("ADMIN")
+                        .requestMatchers("/users/create").hasRole("ADMIN")
                         .anyRequest().authenticated() // Qualquer outra rota exige login
                 )
                 .formLogin(form -> form

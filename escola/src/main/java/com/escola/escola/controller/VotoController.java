@@ -31,6 +31,14 @@ public class VotoController {
         this.chapaService = chapaService;
     }
 
+    @GetMapping("/votar")
+    public ModelAndView getVotar() {
+        ModelAndView modelAndView = new ModelAndView("votar");
+        modelAndView.addObject("listaChapas", chapaService.findChapas());
+        modelAndView.addObject("voto", new Voto());
+        return modelAndView;
+    }
+
     @PostMapping
     public ModelAndView postVoto(@Valid @ModelAttribute Voto voto,
                                  @AuthenticationPrincipal UserDetails userDetails,
@@ -65,6 +73,7 @@ public class VotoController {
             redirectAttributes.addFlashAttribute("mensagemErro",mensagemErro);
             return new ModelAndView("redirect:/paginaInicial");
         }
+        
 
         return modelAndView.addObject("listaChapas", listaChapas);
     }

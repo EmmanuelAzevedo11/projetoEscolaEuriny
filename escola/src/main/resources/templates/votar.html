@@ -1,42 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Urna</title>
-    <link rel="stylesheet" href="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/static/css/votar.css">
+    <link rel="stylesheet" th:href="@{/css/votar.css}">
+    <style>
+        .chapa-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 8px;
+            background: #fff;
+            color: #333;
+        }
+        #listaChapas {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .votar-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <header>
         <nav>
-        <a href="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/templates/paginaInicial.html">Menu</a>
-        <a href="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/templates/gerenciar.html">Editar Chapa</a>
-        <a href="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/templates/criar.html">Criar Chapa</a>
+            <a th:href="@{/paginaInicial}">Menu</a>
+            <a th:href="@{/chapas}">Editar Chapa / Gerenciar</a>
+            <a th:href="@{/chapas/criar}">Criar Chapa</a>
         </nav>
     </header>
     <main>
-    <h1>Escolha sua chapa</h1>
-    <div id="listaChapas"></div>
+        <h1>Escolha sua chapa</h1>
+        
+        <div th:if="${mensagemSucesso}" class="alert alert-success" style="color: green;" th:text="${mensagemSucesso}"></div>
+        <div th:if="${mensagemErro}" class="alert alert-danger" style="color: red;" th:text="${mensagemErro}"></div>
 
-    <div id="modalVoto" class="modal">
-        <div class="modal-conteudo">
-            <button id="fecharModal" class="fechar">×</button>
-            <h2>Confirmar Voto</h2>
-            <p id="nomeChapaVoto"></p>
-            <form id="formVoto">
-                <label for="raAluno">RA:</label>
-                <input type="text" id="raAluno" required>
-                <label for="senhaAluno">Senha:</label>
-                <input type="password" id="senhaAluno" required>
-                <p id="mensagemVoto"></p>
-                <button type="submit" id="confirmarVoto">Votar</button>
-            </form>
+        <div id="listaChapas">
+            <div th:each="chapaItem : ${listaChapas}" class="chapa-card">
+                <h2 th:text="${chapaItem.name}">Nome da Chapa</h2>
+                <p><strong>Número:</strong> <span th:text="${chapaItem.number}"></span></p>
+                <p><strong>Descrição:</strong> <span th:text="${chapaItem.description}"></span></p>
+                <p><strong>Objetivos:</strong> <span th:text="${chapaItem.objective}"></span></p>
+                
+                <button class="votar-btn" 
+                        th:attr="onclick=|abrirModalVoto('${chapaItem.id}', '${chapaItem.name}')|">
+                    Votar
+                </button>
+            </div>
+            
+            <div th:if="${#lists.isEmpty(listaChapas)}">
+                <p>Nenhuma chapa disponível para votação no momento.</p>
+            </div>
         </div>
-    </div>
-</main>
-    <footer>
 
+        <div id="modalVoto" class="modal">
+            <div class="modal-conteudo">
+                <button type="button" id="fecharModal" class="fechar" onclick="fecharModalVoto()">×</button>
+                <h2>Confirmar Voto</h2>
+                <p id="nomeChapaVotoTexto"></p>
+                
+                <form id="formVoto" th:action="@{/votos}" th:object="${voto}" method="post">
+                    <!-- O id da chapa será preenchido dinamicamente pelo JS inline abaixo -->
+                    <input type="hidden" id="chapaIdInput" name="chapa.id" required>
+                    
+                    <p>O seu usuário (RA) será utilizado para computar o voto, confirme para votar na chapa selecionada.</p>
+                    
+                    <button type="submit" id="confirmarVoto">Confirmar Voto</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <footer>
     </footer>
+
+    <script>
+        const modalVoto = document.getElementById("modalVoto");
+        const nomeChapaVotoTexto = document.getElementById("nomeChapaVotoTexto");
+        const chapaIdInput = document.getElementById("chapaIdInput");
+
+        function abrirModalVoto(chapaId, chapaNome) {
+            nomeChapaVotoTexto.textContent = "Você está votando na " + chapaNome;
+            chapaIdInput.value = chapaId;
+            modalVoto.classList.add("ativo");
+            modalVoto.style.display = "block";
+        }
+
+        function fecharModalVoto() {
+            modalVoto.classList.remove("ativo");
+            modalVoto.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modalVoto) {
+                fecharModalVoto();
+            }
+        }
+    </script>
 </body>
-<script src="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/static/js/votar.js"></script>
 </html>

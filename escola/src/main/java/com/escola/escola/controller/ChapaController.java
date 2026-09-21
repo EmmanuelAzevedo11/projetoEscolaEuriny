@@ -34,13 +34,20 @@ public class ChapaController {
 
     @GetMapping
     public ModelAndView list(){
-        ModelAndView modelAndView = new ModelAndView("chapas/lista");
+        ModelAndView modelAndView = new ModelAndView("chapas/gerenciar");
         try {
             List<Chapa> chapas = chapaService.findChapas();
             modelAndView.addObject("chapas", chapas);
         } catch (Exception ex){
             modelAndView.addObject("mensagemErro", ex.getMessage());
         }
+        return modelAndView;
+    }
+
+    @GetMapping("/criar")
+    public ModelAndView criar(){
+        ModelAndView modelAndView = new ModelAndView("chapas/criar");
+        modelAndView.addObject("chapa", new Chapa());
         return modelAndView;
     }
 
@@ -60,14 +67,15 @@ public class ChapaController {
     public ModelAndView postChapa(@Valid  @ModelAttribute Chapa chapa){
         chapaService.saveChapa(chapa);
 
-        return new ModelAndView("chapa:/chapas");
+        return new ModelAndView("redirect:/chapas");
     }
 
-    @PutMapping("/{id}")
-    public ModelAndView putChapa(@PathVariable("id") Long id, @Valid @ModelAttribute Chapa chapa ){
+    @PostMapping ("/{id}/salvar")
+    public ModelAndView putChapa(@PathVariable("id") Long id, @Valid @ModelAttribute Chapa chapa, RedirectAttributes redirectAttributes ){
         chapa.setId(id);
         chapaService.putChapa(chapa);
-        return new ModelAndView("chapa:/chapas");
+        redirectAttributes.addFlashAttribute("mensagemSucesso", "Chapa atualizada com sucesso!");
+        return new ModelAndView("redirect:/chapas");
     }
 
     //relação de membros

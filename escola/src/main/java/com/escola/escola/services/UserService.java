@@ -32,4 +32,22 @@ public class UserService {
                 new UsuarioNaoEncontradoException("Usuário não econtrado"));
         return user;
     }
+
+    public List<User> findByTeam(String team){
+        List<User> users = userRepository.findByTeam(team);
+
+        if(users.isEmpty()){
+            throw new UsuarioNaoEncontradoException("Usuários não encontrados");
+        }
+
+        return users;
+    }
+
+    public User createUser(User user){
+        if(userRepository.findByUsername(user.getUsername()).isPresent()){
+            throw new UsuarioNaoEncontradoException("Usuário já cadastrado");
+        }
+        userRepository.save(user);
+        return user;
+    }
 }

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Votação</title>
+    <!-- Importando o Bootstrap para estilização rápida e limpa -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="text-center mb-4">
+        <h3 class="fw-bold">Área de Votação</h3>
+        <p class="text-muted">Entre com suas credenciais</p>
+    </div>
+
+    <!-- Bloco para exibir mensagem de Erro (caso o Spring Security retorne falha) -->
+    <div th:if="${param.error}" class="alert alert-danger text-center" role="alert">
+        RA ou senha inválidos. Tente novamente.
+    </div>
+
+    <!-- Bloco para exibir mensagem de Logout com sucesso -->
+    <div th:if="${param.logout}" class="alert alert-success text-center" role="alert">
+        Você saiu do sistema com sucesso.
+    </div>
+
+    <!-- Formulário de Login padrão do Spring Security -->
+    <form th:action="@{/login}" method="post">
+        
+        <div class="mb-3">
+            <label for="username" class="form-label">RA / Usuário</label>
+            <input type="text" id="username" name="username" class="form-control" placeholder="Digite seu RA" required autofocus>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Senha</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Sua senha" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 py-2">Entrar</button>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

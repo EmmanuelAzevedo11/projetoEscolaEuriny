@@ -3,10 +3,14 @@ package com.escola.escola.controller;
 import com.escola.escola.models.User;
 import com.escola.escola.repository.UserRepository;
 import com.escola.escola.services.UserService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -41,6 +45,26 @@ public class UserController {
             User user = userService.findUser(id);
             modelAndView.addObject("user", user);
         } catch (Exception e) {
+            modelAndView.addObject("mensagemErro", e.getMessage());
+        }
+        return modelAndView;
+    }
+
+    @GetMapping("/create") 
+    public ModelAndView showCreatePage(){
+        ModelAndView modelAndView = new ModelAndView("users/create");
+        modelAndView.addObject("user", new User());
+        return modelAndView;
+    }
+
+    @PostMapping("/createUser")
+    public ModelAndView createUser(@Valid User user){
+        ModelAndView modelAndView = new ModelAndView("users/details");
+        try {
+            User newUser = userService.createUser(user);
+            modelAndView.addObject("user", newUser);
+        } catch (Exception e) {
+            modelAndView.setViewName("users/create");
             modelAndView.addObject("mensagemErro", e.getMessage());
         }
         return modelAndView;

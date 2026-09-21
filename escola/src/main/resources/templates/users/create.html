@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Usuário</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 50px;
+        }
+        .form-card {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="form-card">
+        <h3 class="mb-4 text-center fw-bold">Cadastrar Novo Usuário</h3>
+
+        <!-- Alerta de Erro vindo do Controller/Service -->
+        <div th:if="${mensagemErro}" class="alert alert-danger" role="alert" th:text="${mensagemErro}"></div>
+
+        <!-- Formulário mapeado para o objeto User -->
+        <form th:action="@{/users/createUser}" th:object="${user}" method="post">
+            
+            <div class="mb-3">
+                <label for="username" class="form-label">Nome de Usuário</label>
+                <input type="text" id="username" th:field="*{username}" class="form-control" placeholder="Digite o nome completo" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="ra" class="form-label">RA</label>
+                <input type="text" id="ra" th:field="*{ra}" class="form-control" placeholder="Digite o RA (opcional)">
+            </div>
+
+            <div class="mb-3">
+                <label for="raDigit" class="form-label">Dígito do RA</label>
+                <input type="text" id="raDigit" th:field="*{raDigit}" class="form-control" placeholder="Ex: 5 ou X">
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Senha</label>
+                <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Digite a senha" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="role" class="form-label">Tipo de Usuário (Role)</label>
+                <select id="role" th:field="*{role}" class="form-select" required>
+                    <option value="" disabled selected>Selecione...</option>
+                    <option value="ROLE_COMUM">Comum (Aluno)</option>
+                    <option value="ROLE_ADMIN">Administrador</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="team" class="form-label">Turma (Série)</label>
+                <input type="text" id="team" th:field="*{team}" class="form-control" placeholder="Ex: 6a, 7b">
+            </div>
+
+            <button type="submit" class="btn btn-success w-100 py-2">Salvar Usuário</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

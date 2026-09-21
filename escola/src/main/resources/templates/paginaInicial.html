@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Votação Euriny</title>
-    <link rel="stylesheet" href="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/static/css/paginaInicial.css">
+    <link rel="stylesheet" th:href="@{/css/paginaInicial.css}">
 </head>
 <body>
     <header>
         <nav>
-        <a href="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/templates/criar.html">Criar Chapa</a>
-        <a href="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/templates/gerenciar.html">Editar Chapa</a>
-        <a href="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/templates/votar.html">Votar</a>
+        <a th:href="@{/chapas/criar}">Criar Chapa</a>
+        <a th:href="@{/chapas}">Editar Chapa / Gerenciar</a>
+        <a th:href="@{/votar}">Votar</a>
         </nav>
-        <img src="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/static/css/imgs/Eurinybanner.jpg" alt="Banner escola Euriny">
+        <img th:src="@{/css/imgs/Eurinybanner.jpg}" alt="Banner escola Euriny">
     </header>
     <main>
         <div id="Introduction">
@@ -125,7 +125,7 @@
 
 </div>
             <div id="introductio_img">
-                <img src="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/static/css/imgs/maos_uniao_transparente.png" alt="maos unidas" id="uniao">
+                <img th:src="@{/css/imgs/maos_uniao_transparente.png}" alt="maos unidas" id="uniao">
             </div>
         </div>
     </main>
@@ -133,5 +133,5 @@
 
     </footer>
 </body>
-<script src="/home/gabriel/projetoEscolaEuriny/escola/src/main/resources/static/js/paginainicial.js"></script>
+<script th:src="@{/js/paginainicial.js}"></script>
 </html>

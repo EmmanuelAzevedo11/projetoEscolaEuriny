@@ -25,6 +25,7 @@ public class AdminsCreationService implements CommandLineRunner {
                 User user = new User();
                 user.setUsername("Emmanuel Azevedo");
                 user.setRa("emmanuel");
+                user.setTeam("none");
                 user.setRole(UserRole.ROLE_ADMIN);
                 String passwordUserEmmanuel = "11042006";
                 user.setPassword(passwordEncoder.encode(passwordUserEmmanuel));
@@ -37,6 +38,7 @@ public class AdminsCreationService implements CommandLineRunner {
                 user2.setUsername("Gabriel Proati");
                 user2.setRa("gabriel");
                 user2.setRole(UserRole.ROLE_ADMIN);
+                user2.setTeam("none");
                 String passwordUserGabriel = "123456";
 
                 user2.setPassword(passwordEncoder.encode(passwordUserGabriel));

@@ -1,34 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Membros</title>
+    <link rel="stylesheet" th:href="@{/css/criar.css}">
+    <!-- Adicionando Select2 caso precise -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .membro-item { margin-bottom: 20px; display: flex; flex-direction: column; }
+        .membro-item label { margin-bottom: 5px; font-weight: bold; }
+        .select2-container { margin-bottom: 15px; text-align: left; }
+    </style>
 </head>
 <body>
-<h2>Gerenciar Membros: <span th:text="${chapa.nome}"></span></h2>
+    <header>
+        <nav>
+            <a th:href="@{/home}">Menu</a>
+            <a th:href="@{/chapas}">Editar Chapa / Gerenciar</a>
+            <a th:href="@{/votos/votar}">Votar</a>
+        </nav>
+    </header>
+    <main>
+        <div id="botao_div">
+            <h2>Gerenciar Membros</h2>
+            <p>Atribua os membros para a chapa: <strong th:text="${chapa.name}"></strong></p>
+        </div>
+        <div id="modalChapa" class="modal ativo" style="display:block; position:relative; z-index:1; background:transparent;">
+            <div class="modal-conteudo">
+                <h1>Membros da Chapa</h1>
+                <form th:action="@{/chapas/{id}/membros(id=${chapa.id})}" th:object="${form}" method="post">
+                    
+                    <div th:each="membro, stat : *{membros}" class="membro-item">
+                        <label th:text="${membro.role.type}"></label>
+                        <input type="hidden" th:field="*{membros[__${stat.index}__].role}" />
+                        
+                        <select class="select2" th:field="*{membros[__${stat.index}__].userId}" style="width: 100%;">
+                            <option value="">-- Selecione o responsável --</option>
+                            <option th:each="user : ${todosUsuarios}"
+                                    th:value="${user.id}"
+                                    th:text="${user.nome + ' (RA: ' + user.ra + ')'}">
+                            </option>
+                        </select>
+                    </div>
 
-<form th:action="@{/chapas/{id}/membros(id=${chapa.id})}" th:object="${form}" method="post">
+                    <button type="submit" id="salvarChapa">
+                        Salvar Membros
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <footer>
+    </footer>
 
-    <!-- Faz um loop para renderizar um campo Select2 para CADA cargo do Enum -->
-    <div th:each="membro, stat : *{membros}" style="margin-bottom: 15px;">
-
-        <!-- Mostra o nome do cargo (ex: PRESIDENTE) -->
-        <label th:text="${membro.role.type}"></label>
-
-        <!-- Campo oculto para garantir que o Role seja enviado no POST -->
-        <input type="hidden" th:field="*{membros[__${stat.index}__].role}" />
-
-        <!-- Select2 para escolher o aluno -->
-        <select class="select2" th:field="*{membros[__${stat.index}__].userId}" style="width: 100%;">
-            <option value="">-- Selecione o responsável --</option>
-            <option th:each="user : ${todosUsuarios}"
-                    th:value="${user.id}"
-                    th:text="${user.nome + ' (RA: ' + user.ra + ')'}">
-            </option>
-        </select>
-    </div>
-
-    <button type="submit">Salvar Membros</button>
-</form>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: "-- Selecione o responsável --",
+                allowClear: true
+            });
+        });
+    </script>
 </body>
 </html>

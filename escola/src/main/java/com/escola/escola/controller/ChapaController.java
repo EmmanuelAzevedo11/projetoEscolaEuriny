@@ -65,9 +65,9 @@ public class ChapaController {
 
     @PostMapping("/salvar")
     public ModelAndView postChapa(@Valid  @ModelAttribute Chapa chapa){
-        chapaService.saveChapa(chapa);
+        Chapa savedChapa = chapaService.saveChapa(chapa);
 
-        return new ModelAndView("redirect:/chapas");
+        return new ModelAndView("redirect:/chapas/" + savedChapa.getId() + "/membros");
     }
 
     @PostMapping ("/{id}/salvar")
@@ -81,7 +81,7 @@ public class ChapaController {
     //relação de membros
     @GetMapping("/{id}/membros")
     public ModelAndView gerenciarMembros(@PathVariable("id") Long id) {
-        ModelAndView mv = new ModelAndView("chapas/membros");
+        ModelAndView mv = new ModelAndView("chapas/gerenciarMembros");
         Chapa chapa = chapaService.findChapa(id);
 
         GerenciarMembrosForm form = new GerenciarMembrosForm();

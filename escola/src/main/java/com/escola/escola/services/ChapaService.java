@@ -49,8 +49,8 @@ public class ChapaService {
         return chapa;
     }
 
-    public void saveChapa(Chapa chapa){
-        chapaRepository.save(chapa);
+    public Chapa saveChapa(Chapa chapa){
+        return chapaRepository.save(chapa);
     }
 
     public void putChapa(Chapa chapa){

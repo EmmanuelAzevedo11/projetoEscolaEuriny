@@ -2,6 +2,7 @@ package com.escola.escola.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -31,7 +32,7 @@ public class Chapa {
 
     //caso alguma hora tenha número
     @Column(name = "number", nullable = false)
-    @NotBlank(message = "O número da chapa é obrigatório")
+    @NotNull(message = "O número da chapa é obrigatório")
     private Integer number;
 
     @Column(name = "objective", nullable = true, columnDefinition = "TEXT")

@@ -51,5 +51,4 @@ public class AdminsCreationService implements CommandLineRunner {
             throw new Exception("Erro ao adicionar os usuários: " + e.getMessage());
         }
     }
-
 }

@@ -48,8 +48,31 @@ public class AdminsCreationService implements CommandLineRunner {
 
                 user2.setPassword(passwordEncoder.encode(passwordUserGabriel));
 
+
                 userRepository.save(user2);
                 System.out.println(">> Criado segundo admin <<");
+
+                User user3 = new User();
+                user3.setUsername("Diretoria");
+                user3.setRa("Diretoria");
+                user3.setRole(UserRole.ROLE_ADMIN);
+                user3.setTeam("none");
+                String passwordDiretoria = "diretoria123456";
+
+                user3.setPassword(passwordEncoder.encode(passwordDiretoria));
+                userRepository.save(user3);
+                System.out.println(">> Criado usuário admin da diretoria");
+
+                User user4 = new User();
+                user4.setUsername("Professor");
+                user4.setRa("Professor");
+                user4.setRole(UserRole.ROLE_ADMIN);
+                user4.setTeam("none");
+                String passwordProfessor = "professor123456";
+
+                user4.setPassword(passwordEncoder.encode(passwordProfessor));
+                userRepository.save(user4);
+                System.out.println(">> Criado usuário admin de professor");
             } else {
                 System.out.println(">>>  Já existe os usuários admins  <<<");
             }

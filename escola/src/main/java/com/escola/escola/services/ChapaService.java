@@ -1,5 +1,6 @@
 package com.escola.escola.services;
 
+import com.escola.escola.enums.UserChapaRole;
 import com.escola.escola.exceptions.ChapaNaoEncontradaException;
 import com.escola.escola.form.GerenciarMembrosForm;
 import com.escola.escola.models.Chapa;
@@ -11,7 +12,10 @@ import com.escola.escola.repository.UsersChapaRepository;
 import com.escola.escola.repository.VotoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -41,6 +45,18 @@ public class ChapaService {
                 new ChapaNaoEncontradaException("Chapa não encontrada"));
     }
 
+    public String converterLogoParaBase64(MultipartFile logoFile) throws IOException {
+        if (logoFile == null || logoFile.isEmpty()) {
+            return null;
+        }
+        String contentType = logoFile.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            contentType = "image/png";
+        }
+        String base64 = Base64.getEncoder().encodeToString(logoFile.getBytes());
+        return "data:" + contentType + ";base64," + base64;
+    }
+
     public Chapa saveChapa(Chapa chapa){
         return chapaRepository.save(chapa);
     }
@@ -49,9 +65,13 @@ public class ChapaService {
     public void putChapa(Chapa chapaDados){
         Chapa existente = findChapa(chapaDados.getId());
         existente.setName(chapaDados.getName());
+        existente.setCoordenador(chapaDados.getCoordenador());
         existente.setNumber(chapaDados.getNumber());
         existente.setDescription(chapaDados.getDescription());
         existente.setObjective(chapaDados.getObjective());
+        if (chapaDados.getLogo() != null && !chapaDados.getLogo().isBlank()) {
+            existente.setLogo(chapaDados.getLogo());
+        }
         chapaRepository.save(existente);
     }
 
@@ -86,6 +106,13 @@ public class ChapaService {
                 vinculo.setRoleChapa(dto.getRole());
 
                 usersChapaRepository.save(vinculo);
+
+                // Se a chapa ainda não tiver coordenador preenchido manualmente e o cargo for Presidente, define-o
+                if ((chapa.getCoordenador() == null || chapa.getCoordenador().isBlank())
+                        && dto.getRole() == UserChapaRole.ROLE_PRESIDENTE) {
+                    chapa.setCoordenador(user.getUsername());
+                    chapaRepository.save(chapa);
+                }
             }
         }
     }

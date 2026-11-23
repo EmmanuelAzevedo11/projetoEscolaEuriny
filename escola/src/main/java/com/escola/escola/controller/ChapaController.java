@@ -67,6 +67,7 @@ public class ChapaController {
     @PostMapping("/salvar")
     public ModelAndView postChapa(@Valid @ModelAttribute("chapa") Chapa chapa,
                                   BindingResult bindingResult,
+                                  @RequestParam(value = "logoFile", required = false) org.springframework.web.multipart.MultipartFile logoFile,
                                   RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             ModelAndView mv = new ModelAndView("chapas/criar");
@@ -76,6 +77,10 @@ public class ChapaController {
         }
 
         try {
+            String logoBase64 = chapaService.converterLogoParaBase64(logoFile);
+            if (logoBase64 != null) {
+                chapa.setLogo(logoBase64);
+            }
             Chapa savedChapa = chapaService.saveChapa(chapa);
             redirectAttributes.addFlashAttribute("mensagemSucesso", "Chapa criada com sucesso!");
             return new ModelAndView("redirect:/chapas/" + savedChapa.getId() + "/membros");
@@ -89,6 +94,7 @@ public class ChapaController {
     public ModelAndView putChapa(@PathVariable("id") Long id,
                                  @Valid @ModelAttribute("chapa") Chapa chapa,
                                  BindingResult bindingResult,
+                                 @RequestParam(value = "logoFile", required = false) org.springframework.web.multipart.MultipartFile logoFile,
                                  RedirectAttributes redirectAttributes) {
         chapa.setId(id);
         if (bindingResult.hasErrors()) {
@@ -98,6 +104,10 @@ public class ChapaController {
             return mv;
         }
         try {
+            String logoBase64 = chapaService.converterLogoParaBase64(logoFile);
+            if (logoBase64 != null) {
+                chapa.setLogo(logoBase64);
+            }
             chapaService.putChapa(chapa);
             redirectAttributes.addFlashAttribute("mensagemSucesso", "Chapa atualizada com sucesso!");
             return new ModelAndView("redirect:/chapas");

@@ -77,15 +77,25 @@ class EscolaApplicationTests {
 	}
 
 	@Test
-	void fullElectionCycleAdminCreatesEditsChapaManagesMembersAndStudentVotes() throws Exception {
-		User aluno1 = userRepository.findByRa("000115778975").orElseThrow();
-		User aluno2 = userRepository.findByRa("000120066425").orElseThrow();
+	void fullElectionCycleAdminCreatesEditsChapaWithLogoAndCoordinatorManagesMembersAndBlocksMemberFromVoting() throws Exception {
+		User membroChapa1 = userRepository.findByRa("000115778975").orElseThrow();
+		User membroChapa2 = userRepository.findByRa("000120066425").orElseThrow();
+		User eleitorComum = userRepository.findByRa("000114736820").orElseThrow();
 
-		// 1. Admin cria uma nova chapa
-		mockMvc.perform(post("/chapas/salvar")
+		org.springframework.mock.web.MockMultipartFile logoFile = new org.springframework.mock.web.MockMultipartFile(
+				"logoFile",
+				"logo.png",
+				"image/png",
+				new byte[]{(byte) 137, 80, 78, 71}
+		);
+
+		// 1. Admin cria uma nova chapa com logo e coordenador
+		mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart("/chapas/salvar")
+						.file(logoFile)
 						.with(csrf())
 						.with(user("emmanuel").roles("ADMIN"))
 						.param("name", "Chapa União Estudantil")
+						.param("coordenador", "Prof. Carlos Silva")
 						.param("number", "10")
 						.param("description", "Unidos pela escola")
 						.param("objective", "Melhorar quadra e eventos culturais"))
@@ -98,6 +108,9 @@ class EscolaApplicationTests {
 				.findFirst()
 				.orElseThrow();
 
+		assertThat(novaChapa.getLogo()).startsWith("data:image/png;base64,");
+		assertThat(novaChapa.getNomeCoordenador()).isEqualTo("Prof. Carlos Silva");
+
 		// 2. Admin gerencia os membros da chapa
 		mockMvc.perform(get("/chapas/" + novaChapa.getId() + "/membros")
 						.with(user("emmanuel").roles("ADMIN")))
@@ -108,9 +121,9 @@ class EscolaApplicationTests {
 						.with(csrf())
 						.with(user("emmanuel").roles("ADMIN"))
 						.param("membros[0].role", UserChapaRole.ROLE_PRESIDENTE.name())
-						.param("membros[0].userId", aluno1.getId().toString())
+						.param("membros[0].userId", membroChapa1.getId().toString())
 						.param("membros[1].role", UserChapaRole.ROLE_VICE_PRESIDENTE.name())
-						.param("membros[1].userId", aluno2.getId().toString()))
+						.param("membros[1].userId", membroChapa2.getId().toString()))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(redirectedUrl("/chapas"))
 				.andExpect(flash().attributeExists("mensagemSucesso"));
@@ -124,10 +137,11 @@ class EscolaApplicationTests {
 				.andExpect(status().isOk())
 				.andExpect(view().name("chapas/details"));
 
-		mockMvc.perform(post("/chapas/" + novaChapa.getId() + "/salvar")
+		mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart("/chapas/" + novaChapa.getId() + "/salvar")
 						.with(csrf())
 						.with(user("emmanuel").roles("ADMIN"))
 						.param("name", "Chapa União Renovada")
+						.param("coordenador", "Profa. Mariana Souza")
 						.param("number", "15")
 						.param("description", "Slogan atualizado")
 						.param("objective", "Objetivos atualizados"))
@@ -137,18 +151,39 @@ class EscolaApplicationTests {
 
 		Chapa chapaAtualizada = chapaRepository.findById(novaChapa.getId()).orElseThrow();
 		assertThat(chapaAtualizada.getName()).isEqualTo("Chapa União Renovada");
+		assertThat(chapaAtualizada.getNomeCoordenador()).isEqualTo("Profa. Mariana Souza");
 		assertThat(chapaAtualizada.getNumber()).isEqualTo(15);
+		// A logo anterior foi preservada mesmo sem reenviar arquivo na edição
+		assertThat(chapaAtualizada.getLogo()).startsWith("data:image/png;base64,");
 
-		// 4. Aluno acessa a urna (/votos/votar) e vota na chapa
+		// 4. Aluno que É MEMBRO da chapa acessa a urna e tem o voto BLOQUEADO
 		mockMvc.perform(get("/votos/votar")
-						.with(user(aluno1.getRa()).roles("COMUM")))
+						.with(user(membroChapa1.getRa()).roles("COMUM")))
 				.andExpect(status().isOk())
 				.andExpect(view().name("votar"))
+				.andExpect(model().attribute("membroDeChapa", true));
+
+		mockMvc.perform(post("/votos")
+						.with(csrf())
+						.with(user(membroChapa1.getRa()).roles("COMUM"))
+						.param("chapa.id", novaChapa.getId().toString()))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/votos/votar"))
+				.andExpect(flash().attributeExists("mensagemErro"));
+
+		assertThat(votoRepository.countVotos(novaChapa.getId())).isEqualTo(0L);
+
+		// 5. Aluno que NÃO é membro de chapa acessa a urna (/votos/votar) e vota normalmente
+		mockMvc.perform(get("/votos/votar")
+						.with(user(eleitorComum.getRa()).roles("COMUM")))
+				.andExpect(status().isOk())
+				.andExpect(view().name("votar"))
+				.andExpect(model().attribute("membroDeChapa", false))
 				.andExpect(model().attributeExists("listaChapas"));
 
 		mockMvc.perform(post("/votos")
 						.with(csrf())
-						.with(user(aluno1.getRa()).roles("COMUM"))
+						.with(user(eleitorComum.getRa()).roles("COMUM"))
 						.param("chapa.id", novaChapa.getId().toString()))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(redirectedUrl("/votos/votar"))
@@ -156,10 +191,10 @@ class EscolaApplicationTests {
 
 		assertThat(votoRepository.countVotos(novaChapa.getId())).isEqualTo(1L);
 
-		// 5. Aluno tenta votar novamente e é bloqueado
+		// 6. Mesmo eleitor tenta votar uma segunda vez e é bloqueado
 		mockMvc.perform(post("/votos")
 						.with(csrf())
-						.with(user(aluno1.getRa()).roles("COMUM"))
+						.with(user(eleitorComum.getRa()).roles("COMUM"))
 						.param("chapa.id", novaChapa.getId().toString()))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(redirectedUrl("/votos/votar"))
@@ -167,7 +202,7 @@ class EscolaApplicationTests {
 
 		assertThat(votoRepository.countVotos(novaChapa.getId())).isEqualTo(1L);
 
-		// 6. Admin consulta painel de apuração (/votos/chapas)
+		// 7. Admin consulta painel de apuração (/votos/chapas)
 		mockMvc.perform(get("/votos/chapas")
 						.with(user("emmanuel").roles("ADMIN")))
 				.andExpect(status().isOk())

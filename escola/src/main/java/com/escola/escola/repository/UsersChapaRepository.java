@@ -14,6 +14,8 @@ public interface UsersChapaRepository extends JpaRepository<UsersChapa, Long> {
 
     List<UsersChapa> findByChapaId(Long chapaId);
 
+    boolean existsByUserId(Long userId);
+
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("DELETE FROM UsersChapa uc WHERE uc.chapa.id = :chapaId")
     void deleteByChapaId(@Param("chapaId") Long chapaId);

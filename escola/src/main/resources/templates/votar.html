@@ -20,7 +20,28 @@
         .chapa-card h2 {
             color: darkgreen;
             margin-top: 0;
-            margin-bottom: 10px;
+            margin-bottom: 4px;
+        }
+        .coordenador-chapa {
+            color: #1b5e20;
+            font-size: 15px;
+            margin-top: 0;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e8f5e9;
+        }
+        .chapa-logo-box {
+            text-align: center;
+            margin-bottom: 14px;
+        }
+        .chapa-logo {
+            max-height: 120px;
+            max-width: 100%;
+            border-radius: 10px;
+            object-fit: contain;
+            background: #f9fbe7;
+            padding: 6px;
+            border: 1px solid #dcedc8;
         }
         .votar-btn {
             background-color: #2e7d32;
@@ -117,6 +138,15 @@
 
         <div th:if="${mensagemErro}" class="alert-box alert-danger-box" th:text="${mensagemErro}"></div>
 
+        <div th:if="${membroDeChapa == true}" class="alert-box alert-danger-box">
+            <p style="margin:0 0 10px 0;">Atenção: Você está cadastrado(a) como integrante de uma chapa e, pelas regras da eleição, não pode votar.</p>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" style="background:#721c24; color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer;">
+                    Sair da Conta
+                </button>
+            </form>
+        </div>
+
         <div th:if="${jaVotou == true and mensagemSucesso == null}" class="alert-box alert-success-box">
             <p style="margin:0 0 10px 0;">Seu voto já foi registrado nesta eleição. Obrigado por participar!</p>
             <form th:action="@{/logout}" method="post" style="display:inline;">
@@ -129,7 +159,16 @@
         <div id="listaChapas">
             <div th:each="chapaItem : ${listaChapas}" class="chapa-card">
                 <div>
+                    <div class="chapa-logo-box" th:if="${chapaItem.logo != null and !#strings.isEmpty(chapaItem.logo)}">
+                        <img th:src="${chapaItem.logo}" alt="Logo da Chapa" class="chapa-logo">
+                    </div>
+
                     <h2 th:text="${chapaItem.name + ' - Nº ' + chapaItem.number}">Nome da Chapa</h2>
+                    <p class="coordenador-chapa">
+                        <strong>Coordenador(a):</strong>
+                        <span th:text="${chapaItem.nomeCoordenador != null ? chapaItem.nomeCoordenador : 'Não informado'}"></span>
+                    </p>
+
                     <p><strong>Número:</strong> <span th:text="${chapaItem.number}"></span></p>
                     <p><strong>Descrição / Slogan:</strong> <span th:text="${chapaItem.description}"></span></p>
                     <p><strong>Objetivos:</strong> <span th:text="${chapaItem.objective}"></span></p>
@@ -148,16 +187,20 @@
                 </div>
 
                 <div>
-                    <button th:if="${jaVotou != true}"
+                    <button th:if="${jaVotou != true and membroDeChapa != true}"
                             type="button"
                             class="votar-btn"
                             th:data-id="${chapaItem.id}"
                             th:data-name="${chapaItem.name}"
                             th:data-number="${chapaItem.number}"
-                            onclick="abrirModalVoto(this.getAttribute('data-id'), this.getAttribute('data-name'), this.getAttribute('data-number'))">
+                            th:data-coordenador="${chapaItem.nomeCoordenador != null ? chapaItem.nomeCoordenador : 'Não informado'}"
+                            onclick="abrirModalVoto(this.getAttribute('data-id'), this.getAttribute('data-name'), this.getAttribute('data-number'), this.getAttribute('data-coordenador'))">
                         Votar nesta Chapa
                     </button>
-                    <button th:if="${jaVotou == true}" type="button" class="votar-btn" disabled>
+                    <button th:if="${membroDeChapa == true}" type="button" class="votar-btn" disabled>
+                        Voto bloqueado (Membro de Chapa)
+                    </button>
+                    <button th:if="${jaVotou == true and membroDeChapa != true}" type="button" class="votar-btn" disabled>
                         Voto já realizado
                     </button>
                 </div>
@@ -172,7 +215,8 @@
             <div class="modal-conteudo">
                 <button type="button" id="fecharModal" class="fechar" onclick="fecharModalVoto()">×</button>
                 <h2>Confirmar Voto</h2>
-                <p id="nomeChapaVotoTexto" style="font-size:18px; font-weight:bold;"></p>
+                <p id="nomeChapaVotoTexto" style="font-size:18px; font-weight:bold; margin-bottom:4px;"></p>
+                <p id="coordenadorChapaVotoTexto" style="font-size:15px; color:#1b5e20; margin-top:0; font-weight:600;"></p>
 
                 <form id="formVoto" th:action="@{/votos}" th:object="${voto}" method="post">
                     <input type="hidden" id="chapaIdInput" name="chapa.id" required>
@@ -190,10 +234,12 @@
     <script>
         const modalVoto = document.getElementById("modalVoto");
         const nomeChapaVotoTexto = document.getElementById("nomeChapaVotoTexto");
+        const coordenadorChapaVotoTexto = document.getElementById("coordenadorChapaVotoTexto");
         const chapaIdInput = document.getElementById("chapaIdInput");
 
-        function abrirModalVoto(chapaId, chapaNome, chapaNumero) {
+        function abrirModalVoto(chapaId, chapaNome, chapaNumero, chapaCoordenador) {
             nomeChapaVotoTexto.textContent = "Chapa: " + chapaNome + " (Nº " + chapaNumero + ")";
+            coordenadorChapaVotoTexto.textContent = "Coordenador(a): " + (chapaCoordenador || "Não informado");
             chapaIdInput.value = chapaId;
             modalVoto.classList.add("ativo");
             modalVoto.style.display = "flex";

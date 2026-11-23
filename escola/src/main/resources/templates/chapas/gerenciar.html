@@ -62,7 +62,13 @@
 
         <div id="listaChapas">
             <div th:each="chapa : ${chapas}" class="chapa-card">
-                <h2 style="color:darkgreen; margin-top:0;" th:text="${chapa.name}">Nome da Chapa</h2>
+                <div th:if="${chapa.logo != null and !#strings.isEmpty(chapa.logo)}" style="text-align:center; margin-bottom:12px;">
+                    <img th:src="${chapa.logo}" alt="Logo da Chapa" style="max-height: 100px; max-width: 100%; border-radius: 10px; object-fit: contain;">
+                </div>
+                <h2 style="color:darkgreen; margin-top:0; margin-bottom:4px;" th:text="${chapa.name}">Nome da Chapa</h2>
+                <p style="margin-top:0; color:#2e7d32; font-weight:600;">
+                    Coordenador(a): <span th:text="${chapa.nomeCoordenador != null ? chapa.nomeCoordenador : 'Não informado'}"></span>
+                </p>
                 <p><strong>Número:</strong> <span th:text="${chapa.number}">0</span></p>
                 <p><strong>Descrição:</strong> <span th:text="${chapa.description}"></span></p>
                 <p><strong>Objetivos:</strong> <span th:text="${chapa.objective}"></span></p>

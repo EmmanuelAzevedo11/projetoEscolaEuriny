@@ -42,6 +42,7 @@ public class VotoController {
             userRepository.findByRa(userDetails.getUsername()).ifPresent(user -> {
                 modelAndView.addObject("usuarioLogado", user);
                 modelAndView.addObject("jaVotou", votoService.jaVotou(user.getId()));
+                modelAndView.addObject("membroDeChapa", votoService.pertenceAChapa(user));
             });
         }
         return modelAndView;

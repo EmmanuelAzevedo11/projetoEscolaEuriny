@@ -1,29 +1,43 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciar chapa</title>
+    <title>Gerenciar Chapas</title>
     <link rel="stylesheet" th:href="@{/css/gerenciar.css}">
     <style>
         .chapa-card {
-            border: 1px solid #ccc;
-            padding: 15px;
+            border: 1px solid #c8e6c9;
+            padding: 20px;
             margin: 10px;
-            border-radius: 8px;
+            border-radius: 12px;
             background: #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .chapa-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
         .chapa-actions a {
             display: inline-block;
-            margin-right: 10px;
-            padding: 8px 12px;
+            padding: 8px 14px;
             background-color: #007bff;
             color: white;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 6px;
+            font-weight: 500;
         }
         .chapa-actions a:hover {
             background-color: #0056b3;
+        }
+        .membros-resumo {
+            background: #f1f8e9;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -31,28 +45,48 @@
     <header>
         <nav>
             <a th:href="@{/home}">Menu</a>
-            <a th:href="@{/chapas/criar}">Criar Chapa</a>
             <a th:href="@{/votos/votar}">Votar</a>
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/chapas/criar}">Criar Chapa</a>
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/chapas}">Gerenciar Chapas</a>
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/votos/chapas}">Apuração de Votos</a>
+            <form th:action="@{/logout}" method="post" style="display:inline; margin:0;">
+                <button type="submit" style="background:#c0392b; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer; font-size:15px;">Sair</button>
+            </form>
         </nav>
     </header>
     <main>
-        <h1 id="titulo">Gerenciamento de chapa</h1>
+        <h1 id="titulo">Gerenciamento de Chapas</h1>
         
-        <div th:if="${mensagemSucesso}" class="alert alert-success" style="color: green;" th:text="${mensagemSucesso}"></div>
-        <div th:if="${mensagemErro}" class="alert alert-danger" style="color: red;" th:text="${mensagemErro}"></div>
+        <div th:if="${mensagemSucesso}" style="max-width:700px; margin:0 auto 20px auto; background:#d4edda; color:#155724; padding:12px 18px; border-radius:8px; text-align:center; font-weight:bold;" th:text="${mensagemSucesso}"></div>
+        <div th:if="${mensagemErro}" style="max-width:700px; margin:0 auto 20px auto; background:#f8d7da; color:#721c24; padding:12px 18px; border-radius:8px; text-align:center; font-weight:bold;" th:text="${mensagemErro}"></div>
 
         <div id="listaChapas">
             <div th:each="chapa : ${chapas}" class="chapa-card">
-                <h2 th:text="${chapa.name}">Nome da Chapa</h2>
-                <p>Chapa número <span th:text="${chapa.number}">0</span></p>
+                <h2 style="color:darkgreen; margin-top:0;" th:text="${chapa.name}">Nome da Chapa</h2>
+                <p><strong>Número:</strong> <span th:text="${chapa.number}">0</span></p>
+                <p><strong>Descrição:</strong> <span th:text="${chapa.description}"></span></p>
+                <p><strong>Objetivos:</strong> <span th:text="${chapa.objective}"></span></p>
+
+                <div class="membros-resumo">
+                    <strong>Membros cadastrados:</strong>
+                    <span th:text="${chapa.membros != null ? #lists.size(chapa.membros) : 0}">0</span>
+                    <ul th:if="${chapa.membros != null and !#lists.isEmpty(chapa.membros)}" style="margin:6px 0 0 0; padding-left:18px;">
+                        <li th:each="membro : ${chapa.membros}">
+                            <strong style="text-transform:capitalize;" th:text="${#strings.replace(membro.roleChapa.type, '_', ' ') + ': '}"></strong>
+                            <span th:text="${membro.user.username}"></span>
+                        </li>
+                    </ul>
+                </div>
+
                 <div class="chapa-actions">
                     <a th:href="@{/chapas/{id}(id=${chapa.id})}">Editar Dados</a>
-                    <a th:href="@{/chapas/{id}/membros(id=${chapa.id})}">Gerenciar Membros</a>
+                    <a th:href="@{/chapas/{id}/membros(id=${chapa.id})}" style="background-color:#2e7d32;">Gerenciar Membros</a>
                 </div>
             </div>
             
-            <div th:if="${#lists.isEmpty(chapas)}">
-                <p>Nenhuma chapa cadastrada.</p>
+            <div th:if="${#lists.isEmpty(chapas)}" style="text-align:center; grid-column: 1 / -1;">
+                <p style="font-size:18px;">Nenhuma chapa cadastrada ainda.</p>
+                <a th:href="@{/chapas/criar}" style="display:inline-block; padding:10px 18px; background:darkgreen; color:white; text-decoration:none; border-radius:8px;">Criar Primeira Chapa</a>
             </div>
         </div>
     </main>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Chapa</title>
+    <link rel="stylesheet" th:href="@{/css/criar.css}">
+</head>
+<body>
+    <header>
+        <nav>
+            <a th:href="@{/home}">Menu</a>
+            <a th:href="@{/votos/votar}">Votar</a>
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/chapas/criar}">Criar Chapa</a>
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/chapas}">Gerenciar Chapas</a>
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/votos/chapas}">Apuração de Votos</a>
+            <form th:action="@{/logout}" method="post" style="display:inline; margin:0;">
+                <button type="submit" style="background:#c0392b; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer; font-size:15px;">Sair</button>
+            </form>
+        </nav>
+    </header>
+    <main>
+        <div id="modalChapa" class="modal ativo" style="display:flex; position:relative; z-index:1; background:transparent; padding: 30px 0;">
+            <div class="modal-conteudo" style="height:auto;">
+                <h1>Editar Dados da Chapa</h1>
+
+                <div th:if="${mensagemSucesso}" style="background:#d4edda; color:#155724; padding:12px; border-radius:8px; margin-bottom:15px; font-weight:bold;" th:text="${mensagemSucesso}"></div>
+                <div th:if="${mensagemErro}" style="background:#f8d7da; color:#721c24; padding:12px; border-radius:8px; margin-bottom:15px; font-weight:bold;" th:text="${mensagemErro}"></div>
+
+                <form id="formChapa" th:action="@{/chapas/{id}/salvar(id=${chapa.id})}" th:object="${chapa}" method="post">
+                    <label for="nomeChapa">Nome da chapa:</label>
+                    <input type="text" id="nomeChapa" th:field="*{name}" minlength="3" required>
+
+                    <label for="numero">Número da chapa:</label>
+                    <input type="number" id="numero" th:field="*{number}" min="1" step="1" required>
+
+                    <label for="descricao">Descrição / Slogan:</label>
+                    <input type="text" id="descricao" th:field="*{description}" required>
+
+                    <label for="objetivos">Objetivos da chapa:</label>
+                    <textarea id="objetivos" th:field="*{objective}" required></textarea>
+
+                    <div style="display:flex; gap:15px; flex-wrap:wrap; margin-top:20px;">
+                        <button type="submit" id="salvarChapa" style="margin-top:0; flex:1;">
+                            Salvar Alterações
+                        </button>
+                        <a th:href="@{/chapas/{id}/membros(id=${chapa.id})}"
+                           style="padding:15px 20px; background-color:#007bff; color:white; text-decoration:none; border-radius:10px; font-size:18px; text-align:center;">
+                            Gerenciar Membros
+                        </a>
+                        <a th:href="@{/chapas}"
+                           style="padding:15px 20px; background-color:#6c757d; color:white; text-decoration:none; border-radius:10px; font-size:18px; text-align:center;">
+                            Voltar
+                        </a>
+                    </div>
+                </form>
+
+                <hr style="margin: 25px 0;">
+                <form th:action="@{/chapas/{id}/excluir(id=${chapa.id})}" method="post"
+                      onsubmit="return confirm('Tem certeza que deseja excluir esta chapa?');">
+                    <button type="submit" style="background-color:#c0392b; color:white; border:none; padding:10px 18px; border-radius:8px; cursor:pointer;">
+                        Excluir Chapa
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <footer>
+    </footer>
+</body>
+</html>

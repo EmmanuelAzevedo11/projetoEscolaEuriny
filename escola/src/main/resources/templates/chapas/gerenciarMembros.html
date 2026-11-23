@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciar Membros</title>
     <link rel="stylesheet" th:href="@{/css/criar.css}">
-    <!-- Adicionando Select2 caso precise -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         .membro-item { margin-bottom: 20px; display: flex; flex-direction: column; }
-        .membro-item label { margin-bottom: 5px; font-weight: bold; }
+        .membro-item label { margin-bottom: 5px; font-weight: bold; text-transform: capitalize; }
         .select2-container { margin-bottom: 15px; text-align: left; }
     </style>
 </head>
@@ -17,36 +16,50 @@
     <header>
         <nav>
             <a th:href="@{/home}">Menu</a>
-            <a th:href="@{/chapas}">Editar Chapa / Gerenciar</a>
             <a th:href="@{/votos/votar}">Votar</a>
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/chapas/criar}">Criar Chapa</a>
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/chapas}">Gerenciar Chapas</a>
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/votos/chapas}">Apuração de Votos</a>
+            <form th:action="@{/logout}" method="post" style="display:inline; margin:0;">
+                <button type="submit" style="background:#c0392b; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer; font-size:15px;">Sair</button>
+            </form>
         </nav>
     </header>
     <main>
-        <div id="botao_div">
+        <div style="text-align:center; padding-top:25px;">
             <h2>Gerenciar Membros</h2>
-            <p>Atribua os membros para a chapa: <strong th:text="${chapa.name}"></strong></p>
+            <p>Atribua os membros para a chapa: <strong th:text="${chapa.name + ' (Nº ' + chapa.number + ')'}"></strong></p>
         </div>
-        <div id="modalChapa" class="modal ativo" style="display:block; position:relative; z-index:1; background:transparent;">
-            <div class="modal-conteudo">
+        <div id="modalChapa" class="modal ativo" style="display:flex; position:relative; z-index:1; background:transparent; padding-bottom: 40px;">
+            <div class="modal-conteudo" style="height:auto;">
                 <h1>Membros da Chapa</h1>
+                <div th:if="${mensagemSucesso}" style="background:#d4edda; color:#155724; padding:12px; border-radius:8px; margin-bottom:15px; font-weight:bold;" th:text="${mensagemSucesso}"></div>
+                <div th:if="${mensagemErro}" style="background:#f8d7da; color:#721c24; padding:12px; border-radius:8px; margin-bottom:15px; font-weight:bold;" th:text="${mensagemErro}"></div>
+
                 <form th:action="@{/chapas/{id}/membros(id=${chapa.id})}" th:object="${form}" method="post">
                     
                     <div th:each="membro, stat : *{membros}" class="membro-item">
-                        <label th:text="${membro.role.type}"></label>
+                        <label th:text="${#strings.replace(membro.role.type, '_', ' ')}"></label>
                         <input type="hidden" th:field="*{membros[__${stat.index}__].role}" />
                         
                         <select class="select2" th:field="*{membros[__${stat.index}__].userId}" style="width: 100%;">
                             <option value="">-- Selecione o responsável --</option>
                             <option th:each="user : ${todosUsuarios}"
                                     th:value="${user.id}"
-                                    th:text="${user.nome + ' (RA: ' + user.ra + ')'}">
+                                    th:text="${user.username + ' (RA: ' + user.ra + (user.team != null and user.team != 'none' ? ' - Turma: ' + #strings.toUpperCase(user.team) : '') + ')'}">
                             </option>
                         </select>
                     </div>
 
-                    <button type="submit" id="salvarChapa">
-                        Salvar Membros
-                    </button>
+                    <div style="display:flex; gap:15px; margin-top:20px;">
+                        <button type="submit" id="salvarChapa" style="margin-top:0; flex:1;">
+                            Salvar Membros
+                        </button>
+                        <a th:href="@{/chapas}"
+                           style="padding:15px 20px; background-color:#6c757d; color:white; text-decoration:none; border-radius:10px; font-size:18px; text-align:center;">
+                            Voltar
+                        </a>
+                    </div>
                 </form>
             </div>
         </div>

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,14 +24,13 @@ public class Chapa {
 
     @Column(name = "name", nullable = false)
     @NotBlank(message = "Nome tem que ser preenchido")
-    @Size(max = 255, min = 3, message = "O nome tem que ter no máximo 255 e no mínimo 255 caracteres ")
+    @Size(max = 255, min = 3, message = "O nome deve ter entre 3 e 255 caracteres")
     private String name;
 
     @Column(name = "description", nullable = false)
-
+    @NotBlank(message = "A descrição é obrigatória")
     private String description;
 
-    //caso alguma hora tenha número
     @Column(name = "number", nullable = false)
     @NotNull(message = "O número da chapa é obrigatório")
     private Integer number;
@@ -39,5 +39,8 @@ public class Chapa {
     private String objective;
 
     @OneToMany(mappedBy = "chapa", fetch = FetchType.LAZY)
-    private List<Voto> votos;
+    private List<Voto> votos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "chapa", fetch = FetchType.EAGER)
+    private List<UsersChapa> membros = new ArrayList<>();
 }

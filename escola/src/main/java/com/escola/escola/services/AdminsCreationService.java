@@ -4,7 +4,6 @@ import com.escola.escola.enums.UserRole;
 import com.escola.escola.models.User;
 import com.escola.escola.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -17,11 +16,18 @@ public class AdminsCreationService implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void run(String ...args) throws  Exception{
-
+    public void run(String ...args) throws Exception {
         try {
+            // Remove registro inválido de cabeçalho CSV caso tenha sido importado anteriormente
+            userRepository.findByRa("RA").ifPresent(invalidUser -> {
+                try {
+                    userRepository.delete(invalidUser);
+                } catch (Exception ignored) {
+                }
+            });
+
             long numberAdmins = userRepository.countByRole(UserRole.ROLE_ADMIN);
-            if(numberAdmins == 0){
+            if (numberAdmins == 0) {
                 User user = new User();
                 user.setUsername("Emmanuel Azevedo");
                 user.setRa("emmanuel");
@@ -29,7 +35,6 @@ public class AdminsCreationService implements CommandLineRunner {
                 user.setRole(UserRole.ROLE_ADMIN);
                 String passwordUserEmmanuel = "11042006";
                 user.setPassword(passwordEncoder.encode(passwordUserEmmanuel));
-
 
                 userRepository.save(user);
                 System.out.println(">> Criado primeiro admin <<");
@@ -45,11 +50,11 @@ public class AdminsCreationService implements CommandLineRunner {
 
                 userRepository.save(user2);
                 System.out.println(">> Criado segundo admin <<");
-            }else{
+            } else {
                 System.out.println(">>>  Já existe os usuários admins  <<<");
             }
 
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new Exception("Erro ao adicionar os usuários: " + e.getMessage());
         }
     }

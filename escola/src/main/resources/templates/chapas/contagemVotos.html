@@ -26,30 +26,35 @@
     <div class="dashboard-card">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="fw-bold mb-0">Painel de Apuração - Votos</h3>
-            <a th:href="@{/chapas}" class="btn btn-outline-secondary btn-sm">Voltar às Chapas</a>
+            <div class="d-flex gap-2">
+                <a th:href="@{/home}" class="btn btn-outline-primary btn-sm">Menu Inicial</a>
+                <a th:href="@{/chapas}" class="btn btn-outline-secondary btn-sm">Voltar às Chapas</a>
+            </div>
         </div>
 
-        <!-- Alerta de Erro caso ocorra -->
         <div th:if="${mensagemErro}" class="alert alert-danger" role="alert" th:text="${mensagemErro}"></div>
 
-        <!-- Tabela de Contagem -->
+        <div class="mb-3 text-end" th:if="${totalGeralVotos != null}">
+            <span class="badge bg-success fs-6">Total Geral de Votos: <span th:text="${totalGeralVotos}">0</span></span>
+        </div>
+
         <div class="table-responsive">
             <table class="table table-striped table-hover align-middle">
                 <thead class="table-dark">
                     <tr>
+                        <th>Número</th>
                         <th>Nome da Chapa</th>
                         <th class="text-center">Total de Votos</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Itera sobre a lista gerada no Service (DTO) -->
                     <tr th:each="resultado : ${resultadoVotacao}">
+                        <td th:text="${resultado.numeroChapa}">1</td>
                         <td th:text="${resultado.nomeChapa}">Nome da Chapa</td>
                         <td class="text-center fw-bold text-primary" th:text="${resultado.totalVotos}">0</td>
                     </tr>
-                    <!-- Caso a lista venha vazia -->
                     <tr th:if="${#lists.isEmpty(resultadoVotacao)}">
-                        <td colspan="2" class="text-center text-muted">Nenhum voto computado até o momento.</td>
+                        <td colspan="3" class="text-center text-muted">Nenhuma chapa cadastrada até o momento.</td>
                     </tr>
                 </tbody>
             </table>

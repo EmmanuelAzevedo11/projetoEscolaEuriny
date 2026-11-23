@@ -14,18 +14,17 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/login").permitAll() // Arquivos estáticos e login públicos
-                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/login", "/error").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/votos/chapas").hasRole("ADMIN")
-                        .requestMatchers("/chapas/salvar").hasRole("ADMIN")
-                        .requestMatchers("/chapas/salvar").hasRole("ADMIN")
-                        .requestMatchers("/users/create").hasRole("ADMIN")
-                        .anyRequest().authenticated() // Qualquer outra rota exige login
+                        .requestMatchers("/chapas/**").hasRole("ADMIN")
+                        .requestMatchers("/users/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // Endpoint da página customizada de login
-                        .defaultSuccessUrl("/home", true) // Redirecionamento após login bem-sucedido
-                        .failureUrl("/login?error=true") // Redirecionamento em caso de erro
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/home", true)
+                        .failureUrl("/login?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -41,6 +40,31 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        BCryptPasswordEncoder delegate = new BCryptPasswordEncoder();
+        return new PasswordEncoder() {
+            @Override
+            public String encode(CharSequence rawPassword) {
+                return delegate.encode(rawPassword);
+            }
+
+            @Override
+            public boolean matches(CharSequence rawPassword, String encodedPassword) {
+                if (rawPassword == null || encodedPassword == null) {
+                    return false;
+                }
+                if (delegate.matches(rawPassword, encodedPassword)) {
+                    return true;
+                }
+                String raw = rawPassword.toString().trim();
+                // Aceita tanto Eurinu@2026 quanto Euriny@2026 para os alunos pré-cadastrados
+                if ("Eurinu@2026".equalsIgnoreCase(raw)) {
+                    return delegate.matches("Euriny@2026", encodedPassword);
+                }
+                if ("Euriny@2026".equalsIgnoreCase(raw)) {
+                    return delegate.matches("Eurinu@2026", encodedPassword);
+                }
+                return false;
+            }
+        };
     }
 }

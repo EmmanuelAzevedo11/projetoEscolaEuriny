@@ -1,13 +1,9 @@
 package com.escola.escola.controller;
 
 import com.escola.escola.models.User;
-import com.escola.escola.repository.UserRepository;
 import com.escola.escola.services.UserService;
-
 import jakarta.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,9 +12,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
+@Controller
 @RequestMapping("/users")
 public class UserController {
-
 
     private final UserService userService;
 
@@ -31,7 +27,7 @@ public class UserController {
         ModelAndView modelAndView = new ModelAndView("usuarios/lista");
         try {
             List<User> users = userService.findUsers();
-            modelAndView.addObject(users);
+            modelAndView.addObject("users", users);
         } catch (Exception e) {
             modelAndView.addObject("mensagemErro", e.getMessage());
         }
@@ -50,7 +46,7 @@ public class UserController {
         return modelAndView;
     }
 
-    @GetMapping("/create") 
+    @GetMapping("/create")
     public ModelAndView showCreatePage(){
         ModelAndView modelAndView = new ModelAndView("users/create");
         modelAndView.addObject("user", new User());
@@ -69,9 +65,4 @@ public class UserController {
         }
         return modelAndView;
     }
-
-
-
-
-
 }

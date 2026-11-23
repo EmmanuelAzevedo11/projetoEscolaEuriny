@@ -48,8 +48,8 @@ public class AlunoEightBImportService implements CommandLineRunner {
                         String ra = colunas[1].trim();
                         String digitoRa = colunas[2].trim();
 
-                        // Importa apenas alunos ativos
-                            if (userRepository.findByRa(ra).isEmpty()) {
+                        // Importa apenas alunos ativos (ignora linha de cabeçalho)
+                            if (!ra.isEmpty() && !"RA".equalsIgnoreCase(ra) && userRepository.findByRa(ra).isEmpty()) {
                                 User aluno = new User();
                                 aluno.setUsername(nome);
                                 aluno.setRa(ra);
